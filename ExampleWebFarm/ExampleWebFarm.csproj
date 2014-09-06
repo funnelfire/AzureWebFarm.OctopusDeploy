@@ -129,7 +129,7 @@
     </Content>
     <Content Include="App.config" />
     <Content Include="..\Startup\*">
-      <Link>Startup\%(Filename)%(Extension)</Link> 
+      <Link>Startup\%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="Web.Debug.config">
