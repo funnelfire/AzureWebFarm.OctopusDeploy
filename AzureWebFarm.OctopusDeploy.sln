@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "AzureWebFarm.OctopusDeploy.Example", "AzureWebFarm.OctopusDeploy.Example\AzureWebFarm.OctopusDeploy.Example.ccproj", "{4457CE61-E327-4C47-B0F8-1FDB4AFAE451}"
+Project("{E0F39400-C313-37A7-853B-CAE74DFB31B1}") = "AzureOctopusFarm", "AzureWebFarm.OctopusDeploy.Example\AzureOctopusFarm.ccproj", "{4457CE61-E327-4C47-B0F8-1FDB4AFAE451}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleWebFarm", "ExampleWebFarm\ExampleWebFarm.csproj", "{46596A51-4879-4896-B27A-844F445E55E7}"
 EndProject
