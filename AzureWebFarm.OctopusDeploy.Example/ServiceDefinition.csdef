@@ -76,4 +76,4 @@
       <Setting name="TentacleMachineNameSuffix" />
     </ConfigurationSettings>
   </WorkerRole>
-</ServiceDefinition>
+</ServiceDefinition>  

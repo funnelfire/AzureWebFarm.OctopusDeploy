@@ -42,11 +42,9 @@ Thumbs.db
 *.vspx
 .nuget/NuGet.exe
 Downloaded Profiling Logs/*
-/src/Web/Scripts/admin/**/*.js
-/src/Web/Scripts/admin/**/*.js.map
-/src/Azure/Profiles
-/src/Azure/ServiceConfiguration.TeamCity.cscfg
+**/Profiles
 *.vsp
 *.Sync*
 *.ide/
 *.DS_Store
+ExampleWebFarm/*.dll.config

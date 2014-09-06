@@ -73,10 +73,4 @@
     <CloudExtensionsDir Condition=" '$(CloudExtensionsDir)' == '' ">$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Windows Azure Tools\2.4\</CloudExtensionsDir>
   </PropertyGroup>
   <Import Project="$(CloudExtensionsDir)Microsoft.WindowsAzure.targets" />
-  <PropertyGroup>
-    <WebProjectName>ExampleWebFarm</WebProjectName>
-  </PropertyGroup>
-  <Target Name="CopyAppConfigurationIntoPackage" BeforeTargets="AfterPackageComputeService">
-    <Copy SourceFiles="$(ProjectDir)..\$(WebProjectName)\App.config" DestinationFiles="$(ProjectDir)obj\$(Configuration)\$(WebProjectName)\bin\$(WebProjectName).dll.config" />
-  </Target>
 </Project>
