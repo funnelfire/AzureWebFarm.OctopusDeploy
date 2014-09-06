@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ServiceDefinition name="AzureWebFarmOctopus" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceDefinition" schemaVersion="2013-10.2.2">
+<ServiceDefinition name="AzureWebFarmOctopus" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceDefinition" schemaVersion="2014-06.2.4">
   <WebRole name="ExampleWebFarm" vmsize="Small">
     <Runtime executionContext="elevated" />
     <Startup>
@@ -30,7 +30,6 @@
     <Imports>
       <Import moduleName="Diagnostics" />
       <Import moduleName="RemoteAccess" />
-      <Import moduleName="RemoteForwarder" />
     </Imports>
     <LocalResources>
       <LocalStorage name="Install" cleanOnRoleRecycle="false" sizeInMB="1024" />
@@ -44,4 +43,37 @@
       <Setting name="TentacleMachineNameSuffix" />
     </ConfigurationSettings>
   </WebRole>
+  <WorkerRole name="ExampleWorkerFarm" vmsize="Small">
+    <Runtime executionContext="elevated" />
+    <Startup>
+      <Task commandLine="Startup\startup.cmd" executionContext="elevated" taskType="simple">
+        <Environment>
+          <Variable name="PathToInstall">
+            <RoleInstanceValue xpath="/RoleEnvironment/CurrentInstance/LocalResources/LocalResource[@name='Install']/@path" />
+          </Variable>
+          <Variable name="PathToDeployments">
+            <RoleInstanceValue xpath="/RoleEnvironment/CurrentInstance/LocalResources/LocalResource[@name='Deployments']/@path" />
+          </Variable>
+          <Variable name="ComputeEmulatorRunning">
+            <RoleInstanceValue xpath="/RoleEnvironment/Deployment/@emulated" />
+          </Variable>
+        </Environment>
+      </Task>
+    </Startup>
+    <Imports>
+      <Import moduleName="Diagnostics" />
+      <Import moduleName="RemoteAccess" />
+    </Imports>
+    <LocalResources>
+      <LocalStorage name="Install" cleanOnRoleRecycle="false" sizeInMB="1024" />
+      <LocalStorage name="Deployments" cleanOnRoleRecycle="true" sizeInMB="19456" />
+    </LocalResources>
+    <ConfigurationSettings>
+      <Setting name="OctopusServer" />
+      <Setting name="OctopusApiKey" />
+      <Setting name="TentacleEnvironment" />
+      <Setting name="TentacleRole" />
+      <Setting name="TentacleMachineNameSuffix" />
+    </ConfigurationSettings>
+  </WorkerRole>
 </ServiceDefinition>

@@ -12,15 +12,19 @@ namespace AzureWebFarm.OctopusDeploy
     public class WebFarmRole
     {
         private readonly Infrastructure.OctopusDeploy _octopusDeploy;
+        private readonly bool _workerRole;
 
         /// <summary>
         /// Create the web role coordinator.
         /// </summary>
         /// <param name="machineName">Specify the machineName if you would like to override the default machine name configuration.</param>
-        public WebFarmRole(string machineName = null)
+        /// <param name="workerRole">Specifies whether or not the role is a worker.</param>
+        public WebFarmRole(string machineName = null, bool workerRole = false)
         {
             Log.Logger = AzureEnvironment.GetAzureLogger();
             var config = AzureEnvironment.GetConfigSettings();
+
+            _workerRole = workerRole;
 
             machineName = machineName ?? AzureEnvironment.GetMachineName(config);
             var octopusRepository = Infrastructure.OctopusDeploy.GetRepository(config);
@@ -49,8 +53,8 @@ namespace AzureWebFarm.OctopusDeploy
         public void Run()
         {
             // Don't want to configure IIS if we are emulating; just sleep forever
-            if (RoleEnvironment.IsEmulated)
-                Thread.Sleep(-1);
+            if (RoleEnvironment.IsEmulated || _workerRole)
+                Thread.Sleep(Timeout.Infinite);
 
             while (true)
             {
@@ -76,7 +80,9 @@ namespace AzureWebFarm.OctopusDeploy
         {
             _octopusDeploy.UninstallTentacle();
             _octopusDeploy.DeleteMachine();
-            IisEnvironment.WaitForAllHttpRequestsToEnd();
+
+            if (!_workerRole)
+                IisEnvironment.WaitForAllHttpRequestsToEnd();
         }
     }
 }
