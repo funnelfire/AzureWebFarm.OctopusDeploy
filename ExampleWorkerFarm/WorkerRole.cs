@@ -6,12 +6,11 @@ namespace WorkerFarm
 {
     public class WorkerRole : RoleEntryPoint
     {
-        private readonly AzureWebFarm.OctopusDeploy.WebFarmRole _webFarmRole;
+        private readonly AzureWebFarm.OctopusDeploy.FarmRole _webFarmRole;
 
         public WorkerRole()
         {
-            SpinWait.SpinUntil(() => Debugger.IsAttached);
-            _webFarmRole = new AzureWebFarm.OctopusDeploy.WebFarmRole(workerRole: true);
+            _webFarmRole = new AzureWebFarm.OctopusDeploy.FarmRole(workerRole: true);
         }
 
         public override bool OnStart()

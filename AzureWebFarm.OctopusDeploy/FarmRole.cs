@@ -7,9 +7,9 @@ using Serilog;
 namespace AzureWebFarm.OctopusDeploy
 {
     /// <summary>
-    /// Coordinates an OctopusDeploy-powered webfarm Azure Web Role.
+    /// Coordinates an OctopusDeploy-powered farm Azure Role.
     /// </summary>
-    public class WebFarmRole
+    public class FarmRole
     {
         private readonly Infrastructure.OctopusDeploy _octopusDeploy;
         private readonly bool _workerRole;
@@ -19,7 +19,7 @@ namespace AzureWebFarm.OctopusDeploy
         /// </summary>
         /// <param name="machineName">Specify the machineName if you would like to override the default machine name configuration.</param>
         /// <param name="workerRole">Specifies whether or not the role is a worker.</param>
-        public WebFarmRole(string machineName = null, bool workerRole = false)
+        public FarmRole(string machineName = null, bool workerRole = false)
         {
             Log.Logger = AzureEnvironment.GetAzureLogger();
             var config = AzureEnvironment.GetConfigSettings();
