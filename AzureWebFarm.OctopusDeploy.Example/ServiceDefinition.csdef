@@ -33,7 +33,7 @@
     </Imports>
     <LocalResources>
       <LocalStorage name="Install" cleanOnRoleRecycle="false" sizeInMB="1024" />
-      <LocalStorage name="Deployments" cleanOnRoleRecycle="true" sizeInMB="19456" />
+      <LocalStorage name="Deployments" cleanOnRoleRecycle="false" sizeInMB="19456" />
     </LocalResources>
     <ConfigurationSettings>
       <Setting name="OctopusServer" />
@@ -66,7 +66,7 @@
     </Imports>
     <LocalResources>
       <LocalStorage name="Install" cleanOnRoleRecycle="false" sizeInMB="1024" />
-      <LocalStorage name="Deployments" cleanOnRoleRecycle="true" sizeInMB="19456" />
+      <LocalStorage name="Deployments" cleanOnRoleRecycle="false" sizeInMB="19456" />
     </LocalResources>
     <ConfigurationSettings>
       <Setting name="OctopusServer" />
@@ -76,4 +76,4 @@
       <Setting name="TentacleMachineNameSuffix" />
     </ConfigurationSettings>
   </WorkerRole>
-</ServiceDefinition>  
+</ServiceDefinition>
