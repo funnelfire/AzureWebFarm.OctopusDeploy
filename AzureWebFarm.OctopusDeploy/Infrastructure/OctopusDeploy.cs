@@ -42,7 +42,7 @@ namespace AzureWebFarm.OctopusDeploy.Infrastructure
             _processRunner.Run(_tentaclePath, string.Format("new-certificate {0} --console", InstanceArg));
             _processRunner.Run(_tentaclePath, string.Format("configure {0} --home \"{1}\" --console", InstanceArg, tentacleDeploymentsPath.Substring(0, tentacleDeploymentsPath.Length - 1)));
             _processRunner.Run(_tentaclePath, string.Format("configure {0} --app \"{1}\" --console", InstanceArg, Path.Combine(tentacleDeploymentsPath, "Applications")));
-            _processRunner.Run(_tentaclePath, string.Format("register-with {0} --server \"{1}\" --environment \"{2}\" --role \"{3}\" --apiKey \"{4}\" --name \"{5}\" --comms-style TentacleActive --force --console", InstanceArg, _config.OctopusServer, _config.TentacleEnvironment, _config.TentacleRole, _config.OctopusApiKey, _machineName));
+            _processRunner.Run(_tentaclePath, string.Format("register-with {0} --server \"{1}\" --environment \"{2}\" {3} --apiKey \"{4}\" --name \"{5}\" --comms-style TentaclePassive --force --console", InstanceArg, _config.OctopusServer, _config.TentacleEnvironment, string.Join(" ", _config.TentacleRole.Split(';').Select(x => "--role \"" + x + "\"")), _config.OctopusApiKey, _machineName));
             _processRunner.Run(_tentaclePath, string.Format("service {0} --install --start --console", InstanceArg));
         }
 
