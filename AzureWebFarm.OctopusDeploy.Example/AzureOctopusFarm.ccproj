@@ -59,6 +59,13 @@
       <RoleType>Web</RoleType>
       <RoleName>ExampleWebFarm</RoleName>
     </ProjectReference>
+    <ProjectReference Include="..\ExampleWebFarm\ExampleWebFarm.csproj">
+      <Name>ExampleWebFarm2</Name>
+      <Project>{46596a51-4879-4896-b27a-844f445e55e7}</Project>
+      <Private>True</Private>
+      <RoleType>Web</RoleType>
+      <RoleName>ExampleWebFarm2</RoleName>
+    </ProjectReference>
     <ProjectReference Include="..\ExampleWorkerFarm\ExampleWorkerFarm.csproj">
       <Name>ExampleWorkerFarm</Name>
       <Project>{EEE3043C-82EF-4661-B35E-8AFA0DF4FB42}</Project>
