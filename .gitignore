@@ -48,3 +48,4 @@ Downloaded Profiling Logs/*
 *.ide/
 *.DS_Store
 ExampleWebFarm/*.dll.config
+ScriptEnvironment/
