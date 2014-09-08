@@ -35,96 +35,67 @@ $children | % { $serviceCfg.ServiceConfiguration.RemoveChild($_) }
 $children = $ccproj.Project.ItemGroup.ProjectReference | foreach { $_ }
 $children | % { $ccproj.Project.ItemGroup.RemoveChild($_) }
 
-$webRoles = $config.GetElementsByTagName("WebRole")
-foreach ($webRole in $webRoles) {
-    $webRoleDef = $protoWebRoleDef.Clone()
-    $webRoleCfg = $protoRoleCfg.Clone()
-    $webRoleRef = $protoWebRoleRef.Clone()
+$roles = $config.GetElementsByTagName("WebRole") + $config.GetElementsByTagName("WorkerRole")
+foreach ($role in $roles) {
+    $tagName = $role.get_Name()
+    $roleCfg = $protoRoleCfg.Clone()
+    if ($tagName -eq "WebRole") {
+        $roleDef = $protoWebRoleDef.Clone()
+        $roleRef = $protoWebRoleRef.Clone()
+        $type = "Web"
+    } else {
+        $roleDef = $protoWorkerRoleDef.Clone()
+        $roleRef = $protoWorkerRoleRef.Clone()
+        $type = "Worker"
+    }
 
-    $webRoleDef.name = $webRole.name
-    $webRoleDef.vmsize = $webRole.vmsize
+    $roleDef.name = $role.name
+    $roleDef.vmsize = $role.vmsize
 
-    $webRoleDef.RemoveChild($webRoleDef.Sites)
-    $sites = $webRoleDef.OwnerDocument.ImportNode($webRole.Sites, $true)
-    $webRoleDef.AppendChild($sites)
+    if ($roleDef.Sites -ne $null) {
+        $roleDef.RemoveChild($roleDef.Sites)
+        $sites = $roleDef.OwnerDocument.ImportNode($role.Sites, $true)
+        $roleDef.AppendChild($sites)
+        $sites.SetAttribute("xmlns", $serviceDef.ServiceDefinition.NamespaceUri)
+    }
 
-    $webRoleDef.RemoveChild($webRoleDef.Endpoints)
-    $endpoints = $webRoleDef.OwnerDocument.ImportNode($webRole.Endpoints, $true)
-    $webRoleDef.AppendChild($endpoints)
+    if ($roleDef.Endpoints -ne $null) {
+        $roleDef.RemoveChild($roleDef.Endpoints)
+        $endpoints = $roleDef.OwnerDocument.ImportNode($role.Endpoints, $true)
+        $roleDef.AppendChild($endpoints)
+        $endpoints.SetAttribute("xmlns", $serviceDef.ServiceDefinition.NamespaceUri)
+    }
     
-    $webRoleCfg.name = $webRole.name
-    $webRoleCfg.Instances.count = $webRole.Instances.count
+    $roleCfg.name = $role.name
+    $roleCfg.Instances.count = $role.Instances.count
 
-    if ($webRole.Certificates -ne $null) {
-        $certificates = $webRoleCfg.OwnerDocument.ImportNode($webRole.Certificates, $true)
+    if ($role.Certificates -ne $null) {
+        $certificates = $roleCfg.OwnerDocument.ImportNode($role.Certificates, $true)
         foreach ($certificate in $certificates.ChildNodes) {
-            $webRoleCfg.Certificates.AppendChild($certificate)
+            $roleCfg.Certificates.AppendChild($certificate)
+            $certificate.SetAttribute("xmlns", $serviceCfg.ServiceConfiguration.NamespaceUri)
         }
     }
 
-    $name = $webRole.name
+    $name = $role.name
+    $protoName = "Example${Type}Farm"
     mkdir $environment\$name
-    copy $environment\ExampleWebFarm $environment\$name -Recurse
+    copy $environment\Example${Type}Farm\* $environment\$name -Recurse
 
-    [xml]$csproj = Get-Content $environment\ExampleWebFarm\ExampleWebFarm.csproj
+    [xml]$csproj = Get-Content $environment\$protoName\$protoName.csproj
     $guid = ([guid]::NewGuid()).ToString("b")
     $csproj.Project.PropertyGroup[0].ProjectGuid = $guid
-    $csproj.Save("$environment\$name\ExampleWebFarm.csproj")
+    $csproj.Save("$environment\$name\$protoName.csproj")
 
-    $webRoleRef["Name"]."#text" = $name
-    $webRoleRef["RoleName"]."#text" = $name
-    $webRoleRef["Project"]."#text" = $guid
-    $webRoleRef.Include = "..\$name\ExampleWebFarm.csproj"
+    $roleRef["Name"]."#text" = $name
+    $roleRef["RoleName"]."#text" = $name
+    $roleRef["RoleType"]."#text" = $type
+    $roleRef["Project"]."#text" = $guid
+    $roleRef.Include = "..\$name\$protoName.csproj"
 
-    $serviceDef.ServiceDefinition.AppendChild($webRoleDef)
-    $serviceCfg.ServiceConfiguration.AppendChild($webRoleCfg)
-    $ccproj.Project.ItemGroup.AppendChild($webRoleRef)
-}
-
-$workerRoles = $config.GetElementsByTagName("WorkerRole")
-foreach ($workerRole in $workerRoles) {
-    $workerRoleDef = $protoWorkerRoleDef.Clone()
-    $workerRoleCfg = $protoRoleCfg.Clone()
-    $workerRoleRef = $protoWorkerRoleRef.Clone()
-
-    $workerRoleDef.name = $workerRole.name
-    $workerRoleDef.vmsize = $workerRole.vmsize
-
-    if ($workerRoleDef.Endpoints -ne $null) {
-        $workerRoleDef.RemoveChild($workerRoleDef.Endpoints)
-    }
-    if ($workerRole.Endpoints -ne $null) {
-        $endpoints = $workerRoleDef.OwnerDocument.ImportNode($workerRole.Endpoints, $true)
-        $workerRoleDef.AppendChild($endpoints)
-    }
-    
-    $workerRoleCfg.name = $workerRole.name
-    $workerRoleCfg.Instances.count = $workerRole.Instances.count
-
-    if ($workerRole.Certificates -ne $null) {
-        $certificates = $workerRoleCfg.OwnerDocument.ImportNode($workerRole.Certificates, $true)
-        foreach ($certificate in $certificates.ChildNodes) {
-            $workerRoleCfg.Certificates.AppendChild($certificate)
-        }
-    }
-
-    $name = $workerRole.name
-    mkdir $environment\$name
-    copy $environment\ExampleWorkerFarm $environment\$name -Recurse
-
-    [xml]$csproj = Get-Content $environment\ExampleWorkerFarm\ExampleWorkerFarm.csproj
-    $guid = ([guid]::NewGuid()).ToString("b")
-    $csproj.Project.PropertyGroup[0].ProjectGuid = $guid
-    $csproj.Save("$environment\$name\ExampleWorkerFarm.csproj")
-
-    $workerRoleRef["Name"]."#text" = $name
-    $workerRoleRef["RoleName"]."#text" = $name
-    $workerRoleRef["Project"]."#text" = $guid
-    $workerRoleRef.Include = "..\$name\ExampleWorkerFarm.csproj"
-        
-    $serviceDef.ServiceDefinition.AppendChild($workerRoleDef)
-    $serviceCfg.ServiceConfiguration.AppendChild($workerRoleCfg)
-    $ccproj.Project.ItemGroup.AppendChild($workerRoleRef)
+    $serviceDef.ServiceDefinition.AppendChild($roleDef)
+    $serviceCfg.ServiceConfiguration.AppendChild($roleCfg)
+    $ccproj.Project.ItemGroup.AppendChild($roleRef)
 }
 
 if ($config.Service.NetworkConfiguration -ne $null) {
