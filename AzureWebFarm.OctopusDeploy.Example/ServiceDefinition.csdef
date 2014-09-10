@@ -3,6 +3,15 @@
   <WebRole name="ExampleWebFarm" vmsize="Small">
     <Runtime executionContext="elevated" />
     <Startup>
+      <Task commandLine="Startup\disable_firewall.cmd" executionContext="elevated" taskType="simple" />
+      <Task commandLine="Startup\configure_dns.cmd" executionContext="elevated" taskType="simple" />
+      <Task commandLine="Startup\RemoteDebugger\install_debugger.cmd" executionContext="elevated" taskType="background">
+        <Environment>
+          <Variable name="ComputeEmulatorRunning">
+            <RoleInstanceValue xpath="/RoleEnvironment/Deployment/@emulated" />
+          </Variable>
+        </Environment>
+      </Task>
       <Task commandLine="Startup\startup.cmd" executionContext="elevated" taskType="simple">
         <Environment>
           <Variable name="PathToInstall">
@@ -46,6 +55,15 @@
   <WorkerRole name="ExampleWorkerFarm" vmsize="Small">
     <Runtime executionContext="elevated" />
     <Startup>
+      <Task commandLine="Startup\disable_firewall.cmd" executionContext="elevated" taskType="simple" />
+      <Task commandLine="Startup\configure_dns.cmd" executionContext="elevated" taskType="simple" />
+      <Task commandLine="Startup\RemoteDebugger\install_debugger.cmd" executionContext="elevated" taskType="background">
+        <Environment>
+          <Variable name="ComputeEmulatorRunning">
+            <RoleInstanceValue xpath="/RoleEnvironment/Deployment/@emulated" />
+          </Variable>
+        </Environment>
+      </Task>
       <Task commandLine="Startup\startup.cmd" executionContext="elevated" taskType="simple">
         <Environment>
           <Variable name="PathToInstall">
