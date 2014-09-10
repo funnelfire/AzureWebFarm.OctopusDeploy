@@ -5,7 +5,7 @@
     <Startup>
       <Task commandLine="Startup\disable_firewall.cmd" executionContext="elevated" taskType="simple" />
       <Task commandLine="Startup\configure_dns.cmd" executionContext="elevated" taskType="simple" />
-      <Task commandLine="Startup\RemoteDebugger\install_debugger.cmd" executionContext="elevated" taskType="background">
+      <Task commandLine="Startup\install_debugger.cmd" executionContext="elevated" taskType="background">
         <Environment>
           <Variable name="ComputeEmulatorRunning">
             <RoleInstanceValue xpath="/RoleEnvironment/Deployment/@emulated" />
@@ -57,7 +57,7 @@
     <Startup>
       <Task commandLine="Startup\disable_firewall.cmd" executionContext="elevated" taskType="simple" />
       <Task commandLine="Startup\configure_dns.cmd" executionContext="elevated" taskType="simple" />
-      <Task commandLine="Startup\RemoteDebugger\install_debugger.cmd" executionContext="elevated" taskType="background">
+      <Task commandLine="Startup\install_debugger.cmd" executionContext="elevated" taskType="background">
         <Environment>
           <Variable name="ComputeEmulatorRunning">
             <RoleInstanceValue xpath="/RoleEnvironment/Deployment/@emulated" />
