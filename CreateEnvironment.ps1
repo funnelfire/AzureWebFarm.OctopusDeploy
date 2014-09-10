@@ -10,7 +10,11 @@ $environment = ".\ScriptEnvironment"
 
 [xml]$config = Get-Content $configPath
 
-rmdir $environment -Force -ErrorAction SilentlyContinue -Recurse
+try {
+    rmdir $environment -Force -Recurse
+} catch {
+[ItemNotFoundException]
+}
 git clone . $environment
 
 [xml]$serviceDef = Get-Content $environment\AzureWebFarm.OctopusDeploy.Example\ServiceDefinition.csdef
@@ -99,7 +103,9 @@ foreach ($role in $roles) {
 }
 
 if ($config.Service.NetworkConfiguration -ne $null) {
-    $serviceCfg.ServiceConfiguration.AppendChild($config.Service.NetworkConfiguration.Clone())
+    $nwconfig = $serviceCfg.ImportNode($config.Service.NetworkConfiguration, $true)
+    $serviceCfg.ServiceConfiguration.AppendChild($nwconfig)
+    $nwconfig.SetAttribute("xmlns", $serviceCfg.ServiceConfiguration.NamespaceUri)
 }
 
 $serviceDef.Save("$environment\AzureWebFarm.OctopusDeploy.Example\ServiceDefinition.csdef")
