@@ -56,6 +56,25 @@ foreach ($role in $roles) {
     $roleDef.name = $role.name
     $roleDef.vmsize = $role.vmsize
 
+    $settings = @(@($role.ConfigurationSettings.ChildNodes) + @($config.Service.ConfigurationSettings.ChildNodes) -ne $null)
+    $config.Service.ConfigurationSettings
+    foreach ($setting in $settings) {
+        $settingDef = $roleDef.ConfigurationSettings.Setting | ? { $_.name -eq $setting.name }
+        if ($settingDef -eq $null) {
+            $settingDef = $serviceDef.CreateElement("Setting")
+            $settingDef.SetAttribute("name", $setting.name)
+            $roleDef.ConfigurationSettings.AppendChild($settingDef)
+        }
+
+        $settingCfg = $roleCfg.ConfigurationSettings.Setting | ? { $_.name -eq $setting.name }
+        if ($settingCfg -eq $null) {
+            $settingCfg = $serviceCfg.CreateElement("Setting")
+            $settingCfg.SetAttribute("name", $setting.name)
+            $roleCfg.ConfigurationSettings.AppendChild($settingCfg)
+        }
+        $settingCfg.SetAttribute("value", $setting.value)
+    }
+
     if ($roleDef.Sites -ne $null) {
         $roleDef.RemoveChild($roleDef.Sites)
         $sites = $roleDef.OwnerDocument.ImportNode($role.Sites, $true)
