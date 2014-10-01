@@ -1,0 +1,66 @@
+<Service name="FunnelFire">
+  <WebRole name="Web" vmsize="Small">
+    <Instances count="1" />
+    <Sites>
+      <Site name="Web">
+        <Bindings>
+          <Binding name="HttpIn" endpointName="Web" />
+          <Binding name="HttpsIn" endpointName="Ssl" />
+        </Bindings>
+      </Site>
+    </Sites>
+    <ConfigurationSettings>
+      <Setting name="TentacleRole" value="Web" />
+    </ConfigurationSettings>
+    <Certificates>
+      <Certificate name="SslCertificate" thumbprint="1B87C27D744F6BF9631CEFBF862C3C9091EA6ABA" thumbprintAlgorithm="sha1" />
+    </Certificates>
+    <Endpoints>
+      <InputEndpoint name="Web" protocol="http" port="80" />
+      <InputEndpoint name="Ssl" protocol="https" port="443" certificate="SslCertificate" />
+    </Endpoints>
+  </WebRole>
+  <WorkerRole name="BatchWorker" vmsize="Small">
+    <Instances count="1" />
+    <ConfigurationSettings>
+      <Setting name="TentacleRole" value="BatchWorker" />
+    </ConfigurationSettings>
+  </WorkerRole>
+  <WorkerRole name="Feed" vmsize="Medium">
+    <Instances count="1" />
+    <ConfigurationSettings>
+      <Setting name="TentacleRole" value="Feed" />
+    </ConfigurationSettings>
+  </WorkerRole>
+  <WorkerRole name="SalesForce" vmsize="Small">
+    <Instances count="1" />
+    <ConfigurationSettings>
+      <Setting name="TentacleRole" value="Salesforce" />
+    </ConfigurationSettings>
+  </WorkerRole>
+  <NetworkConfiguration>
+    <VirtualNetworkSite name="ffazva" />
+    <AddressAssignments>
+      <InstanceAddress roleName="Web">
+        <Subnets>
+          <Subnet name="ws" />
+        </Subnets>
+      </InstanceAddress>
+      <InstanceAddress roleName="BatchWorker">
+        <Subnets>
+          <Subnet name="bg" />
+        </Subnets>
+      </InstanceAddress>
+      <InstanceAddress roleName="Feed">
+        <Subnets>
+          <Subnet name="bg" />
+        </Subnets>
+      </InstanceAddress>
+      <InstanceAddress roleName="SalesForce">
+        <Subnets>
+          <Subnet name="bg" />
+        </Subnets>
+      </InstanceAddress>
+    </AddressAssignments>
+  </NetworkConfiguration>
+</Service>
