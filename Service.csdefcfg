@@ -1,4 +1,7 @@
 <Service name="FunnelFire">
+  <LocalResources>
+    <LocalStorage name="Logs" cleanOnRoleRecycle="false" sizeInMB="1024" />
+  </LocalResources>
   <WebRole name="Web" vmsize="Small">
     <Instances count="1" />
     <Sites>

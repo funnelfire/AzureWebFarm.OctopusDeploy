@@ -57,7 +57,6 @@ foreach ($role in $roles) {
     $roleDef.vmsize = $role.vmsize
 
     $settings = @(@($role.ConfigurationSettings.ChildNodes) + @($config.Service.ConfigurationSettings.ChildNodes) -ne $null)
-    $config.Service.ConfigurationSettings
     foreach ($setting in $settings) {
         $settingDef = $roleDef.ConfigurationSettings.Setting | ? { $_.name -eq $setting.name }
         if ($settingDef -eq $null) {
@@ -73,6 +72,16 @@ foreach ($role in $roles) {
             $roleCfg.ConfigurationSettings.AppendChild($settingCfg)
         }
         $settingCfg.SetAttribute("value", $setting.value)
+    }
+
+    $resources = @(@($role.LocalResources.ChildNodes) + @($config.Service.LocalResources.ChildNodes) -ne $null)
+    foreach ($resource in $resources) {
+        $resourceDef = $roleDef.LocalResources.LocalStorage | ? { $_.name -eq $resource.name }
+        if ($resourceDef -eq $null) {
+            $resourceDef = $roleDef.OwnerDocument.ImportNode($resource, $true)
+            $roleDef.LocalResources.AppendChild($resourceDef)
+            $resourceDef.SetAttribute("xmlns", $serviceDef.ServiceDefinition.NamespaceUri)
+        }
     }
 
     if ($roleDef.Sites -ne $null) {
