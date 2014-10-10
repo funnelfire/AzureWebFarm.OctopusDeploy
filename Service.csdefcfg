@@ -4,8 +4,7 @@
     <Sites>
       <Site name="Web">
         <Bindings>
-          <Binding name="HttpIn" endpointName="Web" />
-          <Binding name="HttpsIn" endpointName="Ssl" />
+          <Binding name="HttpIn" endpointName="Dummy" />
         </Bindings>
       </Site>
     </Sites>
@@ -16,6 +15,7 @@
       <Certificate name="SslCertificate" thumbprint="1B87C27D744F6BF9631CEFBF862C3C9091EA6ABA" thumbprintAlgorithm="sha1" />
     </Certificates>
     <Endpoints>
+      <InputEndpoint name="Dummy" protocol="http" port="12345" />
       <InputEndpoint name="Web" protocol="http" port="80" />
       <InputEndpoint name="Ssl" protocol="https" port="443" certificate="SslCertificate" />
     </Endpoints>
