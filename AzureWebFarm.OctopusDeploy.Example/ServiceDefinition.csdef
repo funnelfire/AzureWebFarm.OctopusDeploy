@@ -29,12 +29,14 @@
     <Sites>
       <Site name="Web">
         <Bindings>
-          <Binding name="HTTP" endpointName="HTTP" />
+          <Binding name="HTTP" endpointName="Unused" />
         </Bindings>
       </Site>
     </Sites>
     <Endpoints>
+      <InputEndpoint name="Unused" protocol="http" port="12345" />
       <InputEndpoint name="HTTP" protocol="http" port="80" />
+      <InputEndpoint name="HTTPS" protocol="https" port="443" />
     </Endpoints>
     <Imports>
       <Import moduleName="Diagnostics" />
